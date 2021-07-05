@@ -103,13 +103,13 @@ function draw() {
           Arrow.destroyEach();
          
            }
-          
-     }
-     if(RbGroup.isTouching(p1))
+          if(RbGroup.get(i).isTouching(p1))
      {
        live--;
       
      }
+     }
+     
      if(live===0)
      {
        gameState=2;
@@ -120,6 +120,7 @@ function draw() {
     {
       fill("black")
       text("Game Over",500,500);
+	    text("Refresh To Start Over",500,550);
     }
     
 
