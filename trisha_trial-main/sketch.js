@@ -1,11 +1,14 @@
 var bg,player1,player2,arrow;
 var p1,p2,arrows,player;
+var button1,button2;
 var gameState=0;
-var m1,m2,m3,m4,m5,m6,m7;
+var m1,m2,m3,m4,m5,m6,m7,stone_img;
 var steps,step;
 var RbGroup,Arrow;
 var life;
 var live=3;
+var gameOver;
+var count=0;
 function preload()
 {
 	bg=loadImage("bg2.jpg");
@@ -21,6 +24,8 @@ function preload()
   arrow=loadImage("arrow.png");
   steps=loadImage("steps.jpg");
   life=loadImage("life.png");
+  gameOver=loadImage("gameover.png");
+  stone_img=loadImage("stone.png");
 }
 
 function setup() {
@@ -30,6 +35,7 @@ step=createSprite(380,300);
     step.addImage(steps);
      RbGroup=createGroup();
      Arrow=createGroup();
+     obstaclesGroup=createGroup();
   //p1.addImage(player1);
   //p1.scale=0.7;
   button1=createButton("Boy")
@@ -60,8 +66,7 @@ step=createSprite(380,300);
          
         })
 
-        //obstaclesGroup = new Group();
-}
+ }
 
 
 function draw() {
@@ -84,6 +89,16 @@ function draw() {
     fill("white");
     textSize(20);
     text(":"+live,550,20);
+
+    fill("white");
+    textSize(20);
+    text("SCORE:"+count,650,20);
+    /*if(count===10)
+    {
+      live++;
+    }*/
+console.log(count);
+console.log(live);
     step.scale=0.00000001;
    step.x=25;
     step.y=25;
@@ -96,30 +111,48 @@ function draw() {
     }
       for(var i=0;i<RbGroup.length;i++)
       {
+        if(RbGroup.get(i).isTouching(p1))
+        {
+          live--;
+         
+        }
         
       if (RbGroup.get(i).isTouching(Arrow))
          { 
           RbGroup.get(i).destroy();
           Arrow.destroyEach();
+          count=count+1;
          
            }
-          if(RbGroup.get(i).isTouching(p1))
-     {
-       live--;
-      
-     }
+          
      }
      
      if(live===0)
      {
        gameState=2;
      }
-      
+     
+ 
+      obstacle();
+      for(var j=0;j<obstaclesGroup.length;j++)
+      {
+      if(obstaclesGroup.get(j).isTouching(Arrow))
+      {
+        count=count-1;
+        obstaclesGroup.get(j).destroy();
+          Arrow.destroyEach();
+      }
+    }
+
     }
     if(gameState===2)
     {
+      background(bg);
       fill("black")
-      text("Game Over",500,500);
+      var gm=createSprite(600,200)
+      gm.addImage(gameOver);
+      gm.scale=1.5;
+      textSize(25);
 	    text("Refresh To Start Over",500,550);
     }
     
@@ -166,7 +199,18 @@ function monster()
   mon1.scale=0.5;
   mon1.velocityX=-5;
   RbGroup.add(mon1);
-  mon1.debug=true;
+  //mon1.debug=true;
 }
  }
+ function obstacle()
+ {
+  if(frameCount%60 === 0)
+  {
+   var stone=createSprite(random(windowWidth/4,windowWidth),0,200,100);
+   stone.addImage(stone_img);
+   stone.scale=0.3;
+   stone.velocityY=4;
+   obstaclesGroup.add(stone);
+  }
 
+ }
